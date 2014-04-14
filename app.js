@@ -1,9 +1,8 @@
 "strict mode";
-//var LINKEDIN_SECRET_KEY = process.env.LINKEDIN_SECRET_KEY;
 //var LINKEDIN_OAUTH_USER_TOKEN = process.env.LINKEDIN_OAUTH_USER_TOKEN;
 //var LINKEDIN_OAUTH_USER_SECRET = process.env.LINKEDIN_OAUTH_USER_SECRET;
 
-
+var url = require('url');
 // Third party modules
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -20,6 +19,8 @@ var linkedin = require('lib').auth.linkedin;
 var debug = require('debug')('hh-api')
 var port = process.env.PORT || 3000;
 var LINKEDIN_API_KEY = process.env.LINKEDIN_API_KEY;
+var LINKEDIN_SECRET_KEY = process.env.LINKEDIN_SECRET_KEY;
+var reUrl = 'http://localhost:3000/api/auth/linkedin/callback';
 
 // Initialization
 var app = express();
@@ -46,13 +47,22 @@ app.use(function(req, res, next) {
 });
 
 app.get('/', function(req, res, next) {
-  var linkStr = linkedin.getAuthLink(LINKEDIN_API_KEY, req.csrfToken());
+  var linkStr = linkedin.getAuthLink(LINKEDIN_API_KEY, req.csrfToken(), reUrl);
   var out = '<html><body><a href="' + linkStr + '">log in</a></body></html>';
   res.send(out);
 });
 
 app.get('/api/auth/linkedin/callback', function(req, res, next) {
-  
+  console.log(typeof(url));
+  var url_parts = url.parse(req.url, true);
+  var query = url_parts.query;
+  var self = this;
+  self.res = res;
+  linkedin.requestAccessToken(query.code, reUrl, LINKEDIN_API_KEY, LINKEDIN_SECRET_KEY, function(err, res, body) {
+    self.res.send(body);
+  });
 });
+
+
 
 app.listen(app.get('port'));
