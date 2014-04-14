@@ -27,6 +27,13 @@
     "cookie-parser": "~1.0.1",
     "method-override": "~1.0.0",
     "express-session": "~1.0.2",
-    "csurf": "~1.1.0"
+    "csurf": "~1.1.0",
+    "request": "~2.34.0"
+  },
+  "devDependencies": {
+    "debug": "~0.8.0",
+    "mocha": "~1.18.2",
+    "assert": "~1.1.1",
+    "coveralls": "~2.10.0"
   }
 }
