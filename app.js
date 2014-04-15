@@ -1,9 +1,10 @@
 "strict mode";
 //var LINKEDIN_OAUTH_USER_TOKEN = process.env.LINKEDIN_OAUTH_USER_TOKEN;
 //var LINKEDIN_OAUTH_USER_SECRET = process.env.LINKEDIN_OAUTH_USER_SECRET;
-
+var crypto = require('crypto');
 var url = require('url');
 // Third party modules
+var scmp = require('scmp');
 var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
@@ -24,6 +25,19 @@ var reUrl = 'http://localhost:3000/api/auth/linkedin/callback';
 
 // Initialization
 var app = express();
+//TODO: move this out of here
+//This is because csurf does not check the csrf token in get requests 
+function createToken(salt, secret) {
+  return salt + crypto
+    .createHash('sha1')
+    .update(salt + secret)
+    .digest('base64');
+}
+function checkToken(token, secret) {
+  if ('string' != typeof token) return false;
+  return scmp(token, createToken(token.slice(0, 10), secret));
+}
+
 app.set('port', port);
 
 // middlewares
@@ -53,16 +67,21 @@ app.get('/', function(req, res, next) {
 });
 
 app.get('/api/auth/linkedin/callback', function(req, res, next) {
-  console.log(typeof(url));
+  var secret = req.session.csrfSecret;
   var url_parts = url.parse(req.url, true);
   var query = url_parts.query;
-  var self = this;
-  self.res = res;
-  linkedin.requestAccessToken(query.code, reUrl, LINKEDIN_API_KEY, LINKEDIN_SECRET_KEY, function(err, res, body) {
-    self.res.send(body);
-  });
+  if (checkToken(query.state, secret)) {
+    var self = this;
+    self.res = res;
+    linkedin.requestAccessToken(query.code, reUrl, LINKEDIN_API_KEY, LINKEDIN_SECRET_KEY, function(err, res, body) {
+      self.res.send(body);
+    });
+  } else {
+    var err = new Error('invalid csrf token');
+    res.send(err.toString());
+  }
 });
 
 
-
 app.listen(app.get('port'));
+
