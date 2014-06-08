@@ -1,0 +1,23 @@
+    <div class="modal">
+
+        <ion-content>
+        <div class="bar bar-header item-input-inset">
+            <label class="item-input-wrapper">
+                <i class="icon ion-ios7-search placeholder-icon"></i>
+                <input type="search" placeholder="Search">
+            </label>
+            <button class="button button-clear">
+                Cancel
+            </button>
+        </div>
+
+        <div class="list">
+        <a class="item item-avatar" href="#" ng-repeat="friend in friends">
+            <img ng-src="img/{{ friend.avatar }}">
+            <h2>{{friend.name}}</h2>
+            <p>{{friend.line}}</p>
+        </a>
+        </div>
+
+        </ion-content>
+    </div>

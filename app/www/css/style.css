@@ -1,0 +1,21 @@
+/* Empty. Add your own CSS if you like */
+.mainScreen {
+    background-image: url('../img/home.jpg');
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+    text-align: center ;
+    vertical-align: center;
+}
+
+.mainScreen h1 {
+    font-family: 'Condiment', cursive;
+    font-size: 100px;
+    margin-top: 300px;
+}
+
+.mainScreen .button {
+    width: 400px;
+    margin: auto;
+    margin-top: 25px;
+}
