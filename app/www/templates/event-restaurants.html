@@ -5,4 +5,11 @@
 
 <ion-content>
     <h2>Restaurants</h2>
+    <div class="list ">
+        <a class="item item-thumbnail-left"  ng-repeat="rest in restaurants">
+            <img ng-src="img/restaurants/{{rest.img}}">
+            <h2>{{rest.name}}</h2>
+            <p>{{rest.name}}</p>
+        </a>
+    </div>
 </ion-content>

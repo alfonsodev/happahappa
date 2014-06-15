@@ -6,4 +6,12 @@
     <ion-content>
         <h2>Friends</h2>
         <button class="button button-block button-positive" ng-click="openmodal()">Add friends</button>
+        <div class="list">
+        <a class="item item-avatar"  ng-repeat="diner in diners">
+            <img ng-src="{{ diner.avatar }}">
+            <h2>{{diner.name}}</h2>
+            <p>{{diner.line}}</p>
+        </a>
+        </div>
+
     </ion-content>

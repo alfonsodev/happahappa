@@ -12,12 +12,11 @@
         </div>
 
         <div class="list">
-        <a class="item item-avatar" href="#" ng-repeat="friend in friends">
-            <img ng-src="img/{{ friend.avatar }}">
+        <a class="item item-avatar" ng-click="addFriend(friend)" ng-repeat="friend in friends">
+            <img ng-src="{{ friend.avatar }}">
             <h2>{{friend.name}}</h2>
             <p>{{friend.line}}</p>
         </a>
         </div>
-
         </ion-content>
     </div>

@@ -1,0 +1,34 @@
+var dat = {
+	"uid": 123123,
+	"email": "alfonso@isla.io",
+	"friends": [
+				{ "name": "Patrick", "img": "patrick.jpg"},
+				{ "name": "Manuela", "img": "manuela.jpg"},
+				{ "name": "Marcin", "img": "marcin.jpg"},
+				{ "name": "Szymon", "img": "szymon.jpg"},
+				{ "name": "Hendrick", "img": "hendrick.jpg"},
+				{ "name": "Daniel Javier", "img": "daniel.jpg"},
+				{ "name": "Jonatan", "img": "jonatan.jpg"},
+				{ "name": "Marin", "img": "marin.jpg"},
+				{ "name": "Winston", "img": "winston.jpg"},
+				{ "name": "Tully", "img": "tully.jpg"},
+				{ "name": "Barret", "img": "barret.jpg"},
+				{ "name": "Tspengler", "img": "tspengler.jpg"}
+	],
+	"restaurants": [
+				{ "name": "Roma", 			"img": "", "votes": 0 },
+				{ "name": "Asian", 			"img": "", "votes": 0 },
+				{ "name": "Salad Place", 	"img": "", "votes": 0 },
+				{ "name": "Soup italian", 	"img": "", "votes": 0 },
+				{ "name": "Other italian", 	"img": "", "votes": 0 },
+				{ "name": "Other italian", 	"img": "", "votes": 0 }
+	],
+	"events": [
+		{
+			"title": "todays lunch",
+			"time": "1402269075",
+			"diners": [],
+			"restaurants": []
+		}
+	]
+}

@@ -29,7 +29,8 @@
     "express-session": "~1.0.2",
     "csurf": "~1.1.0",
     "request": "~2.34.0",
-    "scmp": "0.0.3"
+    "scmp": "0.0.3",
+    "xml2js": "~0.4.4"
   },
   "devDependencies": {
     "debug": "~0.8.0",

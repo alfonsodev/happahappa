@@ -12,6 +12,8 @@ var methodOverride = require('method-override');
 var expressSession = require('express-session');
 var csurf = require('csurf');
 
+var parseString = require('xml2js').parseString;
+
 // Own modules
 var linkedin = require('lib').auth.linkedin;
 
@@ -25,6 +27,8 @@ var reUrl = 'http://localhost:3000/api/auth/linkedin/callback';
 
 // Initialization
 var app = express();
+app.use('/app', express.static(__dirname + '/app/www'));
+
 //TODO: move this out of here
 //This is because csurf does not check the csrf token in get requests 
 function createToken(salt, secret) {
@@ -47,7 +51,8 @@ app.use(methodOverride());
 
 app.use(expressSession({
   secret: 'random-dummy-hash-507f1adcf4e665f0e3754b22912d67f4',
-  cookie: { httpOnly: true
+  cookie: {
+    //httpOnly: true
     // secure: true
   }
 }));
@@ -66,22 +71,50 @@ app.get('/', function(req, res, next) {
   res.send(out);
 });
 
+app.get('/api/linked/connections', function(req, res, next) {
+  linkedin.getContactList(req.session.token, function(err, data){
+    if(err) {
+      res.send(err);
+    } else {
+      parseString(data, function (err, result) {
+        res.send(result)
+      });
+    }
+  });
+});
+
 app.get('/api/auth/linkedin/callback', function(req, res, next) {
   var secret = req.session.csrfSecret;
   var url_parts = url.parse(req.url, true);
   var query = url_parts.query;
-  if (checkToken(query.state, secret)) {
-    var self = this;
+//  if (checkToken(query.state, secret)) {
+  var self = this;
     self.res = res;
+    self.req = req;
+  //todo: sel and res ? this needed check if this scope thing is necesary
     linkedin.requestAccessToken(query.code, reUrl, LINKEDIN_API_KEY, LINKEDIN_SECRET_KEY, function(err, res, body) {
-      self.res.send(body);
+      var parsedBody = JSON.parse(body);
+      self.req.session.token = parsedBody.access_token;
+      self.res.cookie('happa-token', parsedBody.access_token);
+      self.res.redirect(301,'http://localhost:3000/app/#/');
+      // self.res.send(body);
+      /*
+      linkedin.getContactList(token, function(err, data){
+        if(err) {
+          res.send(err);
+        } else {
+          parseString(data, function (err, result) {
+            console.dir(result);
+          });
+        }
+      });
+      */
+      // self.res.send(JSON.parse(body.access_token));
     });
-  } else {
-    var err = new Error('invalid csrf token');
-    res.send(err.toString());
-  }
+ // } else {
+ //    var err = new Error('invalid csrf token');
+ //  res.send(err.toString());
+ // }
 });
 
-
 app.listen(app.get('port'));
-

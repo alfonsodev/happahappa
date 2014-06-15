@@ -23,4 +23,14 @@ angular.module('starter.services', [])
       return friends[friendId];
     }
   }
+})
+.factory('DataStore', function($window) {
+    return {
+      getData: function() {
+        return JSON.parse($window.localStorage['HappaData']);
+      },
+      setData: function(data) {
+       $window.localStorage['HappaData'] = angular.toJson(data);
+      }
+    }
 });

@@ -1,63 +1,68 @@
+
+var makeid = function()
+{
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for( var i=0; i < 5; i++ )
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
+
+var appData;
 angular.module('starter.controllers', [])
 
 .controller('LoginCtrl', function($scope, $location) {
-  console.log('this is the login controller .. ');
+    console.log('this is the login controller .. ');
     $scope.title = 'Happa Happa';
+    $scope.linkAuth = "https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=77znf4cik69ira&scope=r_basicprofile%20r_emailaddress%20r_network&state=" + makeid() +"&redirect_uri=http://localhost:3000/api/auth/linkedin/callback"
+})
 
-    $scope.loginAction = function() {
-      $location.path('/');
+.controller('DashboardCtrl', function($scope, $http, DataStore) {
+  $http.get('http://localhost:3000/api/linked/connections')
+  .success(function(data, status, headers, config) {
+    var i = data.connections.person.length;
+    var friend;
+    var avatar;
+    appData = DataStore.getData();
+
+    while(i--) {
+      avatar = (data.connections.person[i]['picture-url']) ? data.connections.person[i]['picture-url'][0] : '';
+      friend = {
+        name: data.connections.person[i]['first-name'] + ' ' + data.connections.person[i]['last-name'],
+        avatar: avatar,
+        line: data.connections.person[i].headline
+      }
+      appData.friends.push(friend);
     }
-
-})
-
-.controller('DashboardCtrl', function($scope) {
+    $scope.friends = appData.friends;
+    DataStore.setData(appData);
+    console.log('friends completed ');
+  })
   console.log('this is the Dashboard controller .. ');
+
 })
+
 .controller('DashCtrl', function($scope) {
     console.log('FriendsDetail controller');
-})
-
-.controller('FriendsCtrl', function($scope, Friends, $ionicModal) {
-
-})
-
-.controller('FriendDetailCtrl', function($scope, $stateParams, Friends) {
-    console.log('FriendsDetail controller');
-    $scope.friend = Friends.get($stateParams.friendId);
-})
-.controller('AccountCtrl', function($scope) {
-    console.log('Account controller');
 })
 
 .controller('EventConfirm', function($scope, $state) {
   $scope.back = function() { $state.go('dashboard'); };
   console.log('Confirm controller');
 })
-.controller('EventRestaurants', function($scope, $state) {
+.controller('EventRestaurants', function($scope, $state, DataStore) {
+  appData = DataStore.getData();
+  $scope.restaurants = appData.restaurants;
   $scope.back = function() { $state.go('dashboard'); };
   console.log('Account controller');
 })
-.controller('EventFriends', function($scope, $state, $ionicModal) {
+.controller('EventFriends', function($scope, $state, $ionicModal, DataStore) {
   $scope.back = function() { $state.go('dashboard'); };
-  console.log('event friends tabs');
-  $scope.friends = [
-      { avatar: 'patrick.jpg', name: 'Patrick', line: 'Software Engineer and Web Developer'},
-      { avatar: 'manuela.jpg', name: 'Manuela', line: 'science bitch'},
-      { avatar: 'marcin.jpg', name: 'Marcin', line: 'science bitch'},
-      { avatar: 'szymon.jpg', name: 'Szymon', line: 'Coding'},
-      { avatar: 'hendrick.jpg', name: 'Hendrick', line: 'Meeting'},
-      { avatar: 'daniel.jpg', name: 'Daniel Javier Martin', line: 'Mergin expert'},
-      { avatar: 'marcin.jpg', name: 'Marcin Marcinkowski', line: 'Polifacetic'},
-      { avatar: 'mustafa.jpg', name: 'Mustafa', line: 'Zencap developer'},
-      { avatar: 'hendrick.jpg', name: 'Hendrick', line: 'in a meetig'},
-      { avatar: 'jonatan.jpg', name: 'Jonatan', line: 'science bitch'},
-      { avatar: 'barret.jpg', name: 'Barret', line: 'science bitch'},
-      { avatar: 'tspengler.jpg', name: 'Tspengler', line: 'science bitch'},
-      { avatar: 'marin.jpg', name: 'Marin', line: 'science bitch'},
-      { avatar: 'winston.jpg', name: 'Winston', line: 'science bitch'},
-      { avatar: 'tully.jpg', name: 'Tully', line: 'science bitch'}
-    ];
-
+  appData = DataStore.getData();
+  $scope.friends = appData.friends;
+  $scope.diners = appData.events[0].diners;
     $ionicModal.fromTemplateUrl('templates/modal.html', {
       scope: $scope,
       animation: 'slide-in-up'
@@ -83,4 +88,11 @@ angular.module('starter.controllers', [])
     $scope.$on('modal.removed', function() {
       // Execute action
     });
+
+    $scope.addFriend = function(friend) {
+      $scope.diners.push(friend);
+      appData.events[0].diners = $scope.diners;
+      DataStore.setData(appData);
+      console.log('add friend!');
+    };
 });

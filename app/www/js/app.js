@@ -8,6 +8,7 @@
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
 .run(function($ionicPlatform) {
+  console.log('first');
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -77,4 +78,32 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/login');
-});
+}).run(function(DataStore){
+    var dat = {
+      "uid": 123123,
+      "email": "alfonso@isla.io",
+      "friends":[],
+      "restaurants": [
+        { "name": "Schwarzwaldstuben", "img": "Schwarzwaldstuben.jpg", "votes": 0 },
+        { "name": "Aufsturz", "img": "aufsturz.jpg", "votes": 0 },
+        { "name": "Bar Tausend", "img": "bar_tausend.jpg", "votes": 0 },
+        { "name": "Chicago Williams Bbq", "img": "chicago_williams_bbq.jpg", "votes": 0 },
+        { "name": "Dada Falafel", "img": "dada_falafel.jpg", "votes": 0 },
+        { "name": "Dussmann das kulturkaufhaus", 	"img": "dussmann_das_kulturkaufhaus.jpg", "votes": 0 },
+        { "name": "King size bar", "img": "king_size_bar.jpg", "votes": 0 },
+        { "name": "Kunst werke", "img": "kunst_werke.jpg", "votes": 0 },
+        { "name": "lokal", "img": "lokal.jpg", "votes": 0 },
+        { "name": "Pure origins coffe", "img": "pure_origins_estate_coffe.jpg", "votes": 0 }
+      ],
+      "events": [
+        {
+          "title": "todays lunch",
+          "time": "1402269075",
+          "diners": [],
+          "restaurants": []
+        }
+      ]
+    };
+    DataStore.setData(dat);
+  });
+
